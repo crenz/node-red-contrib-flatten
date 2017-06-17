@@ -1,0 +1,26 @@
+{
+  "name": "node-red-contrib-flatten",
+  "version": "0.0.1",
+  "description": "Node-RED node for flattening complex data structures",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crenz/node-red-contrib-flatten.git"
+  },
+  "keywords": [
+    "json",
+    "influxdb",
+    "data",
+    "node-red"
+  ],
+  "author": "Christian Renz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/crenz/node-red-contrib-flatten/issues"
+  },
+  "homepage": "https://github.com/crenz/node-red-contrib-flatten#readme",
+  "node-red"     : {
+    "nodes": {
+      "sample": "flatten/flatten.js"
+    }
+  }  
+}
