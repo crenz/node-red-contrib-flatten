@@ -1,37 +1,34 @@
 module.exports = function(RED) {
-    function flattenKeys(payload, o, prefix) {
-        if (o == null) {
-            o = payload
-        }
 
-        Object.keys(o).forEach(function(key) {
-            var printkey = String(key);
-            printkey = printkey.replace(/ /g, "\\ ");
-            printkey = printkey.replace(/,/g, "\\,");
-
-            var val = o[key];
-            if (typeof val != "object") {
-                if (prefix != null) {
-                    delete o[key];
-                    payload[prefix + "." + printkey] = val;
+        function flattenKeys(data) {
+            var result = {};
+            function recurse (cur, prop) {
+                if (Object(cur) !== cur) {
+                    result[prop] = cur;
+                } else if (Array.isArray(cur)) {
+                     for(var i=0, l=cur.length; i<l; i++)
+                         recurse(cur[i], prop + "[" + i + "]");
+                    if (l == 0)
+                        result[prop] = [];
                 } else {
-                    delete o[key];
-                    payload[printkey] = val;
+                    var isEmpty = true;
+                    for (var p in cur) {
+                        isEmpty = false;
+                        recurse(cur[p], prop ? prop+"."+p : p);
+                    }
+                    if (isEmpty && prop)
+                        result[prop] = {};
                 }
-            } else {
-                flattenKeys(payload, val, prefix == null ? printkey : prefix + "." + printkey);
-                delete o[key];
-            } 
-    });
-
-        return;
-    }
+            }
+            recurse(data, "");
+            return result;
+        }
 
     function FlattenNode(config) {
         RED.nodes.createNode(this,config);
         var node = this;
         node.on('input', function(msg) {
-            flattenKeys(msg.payload);
+            msg.payload = flattenKeys(msg.payload);
             node.send(msg);
         });
     }
